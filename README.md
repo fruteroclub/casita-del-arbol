@@ -1,3 +1,81 @@
+# Fresh Dev Workshop
+
+**Hackea y aprende con amigos mientras construyes cosas divertidas**
+
+Bienvenido a Frutero Club, una comunidad de constructores apasionados por la tecnología.
+
+## ¡Conoce Scaffold-ETH 2!
+
+🧪 Un toolkit actualizado, open-source, para construir aplicaciones descentralizadas (dApps) en la blockchain de Ethereum. Está diseñado para facilitar a los desarrolladores la creación y despliegue de contratos inteligentes y a construir interfaces para interactuar con estos contratos.
+
+⚙️ Construido con NextJS, RainbowKit, Hardhat, Wagmi, Viem, y Typescript.
+
+#### Requisitos
+
+- [Node (>= v18.17)](https://nodejs.org/en/download/)
+- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) o [v2+](https://yarnpkg.com/getting-started/install))
+- [Git](https://git-scm.com/downloads)
+
+### Configuración inicial:
+
+Clona este repositorio
+
+```
+  git clone https://github.com/fruteroclub/fresh-dev-workshop
+```
+
+Cambia al directorio del proyecto
+
+```
+  cd fresh-dev-workshop
+```
+
+Instala las dependencias
+
+```
+  yarn install
+```
+
+### Inicia la aplicación
+
+Necesitaremos al menos 2 terminales para utilizar Scaffold-ETH 2
+
+Corre el siguiente comando para iniciar una red local de Ethereum, utilizando Hardhat. Esta red corre localmente en tu equipo y es un ambiente de desarrollo que permite hacer pruebas. Puedes cambiar la configuración en `hardhat.config.ts` para utilizar una red alternativa.
+
+```
+  yarn chain
+```
+
+En otra terminal, podrás ejecutar el siguiente comando para desplegar el contrato de prueba:
+
+```
+yarn deploy
+```
+
+Este comando despliega el contrato inteligente de prueba en la red local que iniciamos en el paso anterior. Este contrato se encuentra ubicado en `packages/hardhat/contracts`, el cual podrás modificar de acuerdo a tus necesidades. El comando `yarn deploy` utiliza el script de despliegue localizado en `packages/hardhat/deploy` para desplegar el contrato a la red. También puedes modificar el script de despliegue.
+
+En una tercera terminal, inicia la aplicación de NextJS con este comando:
+
+```
+yarn start
+```
+
+La aplicación iniciará en `http://localhost:3000`.
+
+Puedes interactuar con tu contrato inteligente en la página "Debug Contracts". Puedes cambiar la configuración de la aplicación en `packages/nextjs/scaffold.config.ts`.
+
+Puedes correr los tests de tus contratos inteligentes con `yarn hardhat:test`
+
+- Edita el contrato inteligente `YourContract.sol` en `packages/hardhat/contracts`
+- Edita el frontend en `packages/nextjs/pages`
+- Edita los scripts de despliegue en `packages/hardhat/deploy`
+
+## Documentación
+
+Visita la [documentación oficial](https://docs.scaffoldeth.io) para empezar a construir con Scaffold-ETH 2.
+
+Para conocer más sobre esta increíble herramienta, puedes visitar el [website de Scaffold-ETH 2](https://scaffoldeth.io).
+
 # 🏗 Scaffold-ETH 2
 
 <h4 align="center">
@@ -36,42 +114,6 @@ git clone https://github.com/scaffold-eth/scaffold-eth-2.git
 cd scaffold-eth-2
 yarn install
 ```
-
-2. Run a local network in the first terminal:
-
-```
-yarn chain
-```
-
-This command starts a local Ethereum network using Hardhat. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `hardhat.config.ts`.
-
-3. On a second terminal, deploy the test contract:
-
-```
-yarn deploy
-```
-
-This command deploys a test smart contract to the local network. The contract is located in `packages/hardhat/contracts` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/hardhat/deploy` to deploy the contract to the network. You can also customize the deploy script.
-
-4. On a third terminal, start your NextJS app:
-
-```
-yarn start
-```
-
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
-
-Run smart contract test with `yarn hardhat:test`
-
-- Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
-- Edit your frontend in `packages/nextjs/pages`
-- Edit your deployment scripts in `packages/hardhat/deploy`
-
-## Documentation
-
-Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
-
-To know more about its features, check out our [website](https://scaffoldeth.io).
 
 ## Contributing to Scaffold-ETH 2
 
