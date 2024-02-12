@@ -74,6 +74,10 @@ const config: HardhatUserConfig = {
       url: `https://opt-goerli.g.alchemy.com/v2/${providerApiKey}`,
       accounts: [deployerPrivateKey],
     },
+    optimismSepolia: {
+      url: `https://opt-sepolia.g.alchemy.com/v2/${providerApiKey}`,
+      accounts: [deployerPrivateKey],
+    },
     polygon: {
       url: `https://polygon-mainnet.g.alchemy.com/v2/${providerApiKey}`,
       accounts: [deployerPrivateKey],
@@ -124,6 +128,18 @@ const config: HardhatUserConfig = {
     },
     pgnTestnet: {
       url: "https://sepolia.publicgoods.network",
+      accounts: [deployerPrivateKey],
+    },
+    avalancheFaucet: {
+      url: "https://api.avax-test.network/ext/bc/C/rpc",
+      gasPrice: 225000000000,
+      chainId: 43113,
+      accounts: [deployerPrivateKey],
+    },
+    avalancheMain: {
+      url: "https://api.avax.network/ext/bc/C/rpc",
+      gasPrice: 225000000000,
+      chainId: 43114,
       accounts: [deployerPrivateKey],
     },
   },
