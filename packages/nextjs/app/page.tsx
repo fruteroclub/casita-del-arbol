@@ -5,6 +5,7 @@ import { Alchemy, Network } from "alchemy-sdk";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
 import MintPulpaModal from "~~/components/modals/MintPulpaModal";
+import { truncateAddress } from "~~/utils/string";
 
 const config = {
   apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
@@ -113,7 +114,7 @@ const Home: NextPage = () => {
               {pulpaLeaderboardData.map((pulpaHolder, index) => (
                 <tr key={pulpaHolder.wallet_address}>
                   <th>{index + 1}</th>
-                  <td className="text-xl">{pulpaHolder.wallet_address}</td>
+                  <td className="text-xl">{truncateAddress(pulpaHolder.wallet_address, 6, 6)}</td>
                   <td className="text-xl">{parseInt(pulpaHolder.amount)}</td>
                 </tr>
               ))}
