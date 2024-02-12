@@ -22,4 +22,8 @@ contract PulpaToken is ERC20, ERC20Burnable, AccessControl, ERC20Permit {
 	function mint(address to, uint256 amount) public onlyRole(MINTER_ROLE) {
 		_mint(to, amount);
 	}
+
+	function burn(address to, uint256 amount) public onlyRole(MINTER_ROLE) {
+		_burn(to, amount);
+	}
 }
