@@ -1,6 +1,43 @@
-import React from "react";
+"use client";
 
-function BaseModal() {
+import { useEffect, useState } from "react";
+import { AddressInput, EtherInput } from "../scaffold-eth";
+import { useContractWrite, usePrepareContractWrite } from "wagmi";
+import deployedContracts from "~~/contracts/deployedContracts";
+
+const PULPA_TOKEN_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_PULPA_TOKEN_OPTIMISM_ADDRESS;
+
+function MintPulpaModal() {
+  const [form, setForm] = useState<Record<string, any>>({
+    recipientAddress: undefined,
+    amount: "",
+  });
+  const optimismPulpaContract = deployedContracts[10].PulpaToken;
+
+  const { config, error: prepareContractError } = usePrepareContractWrite({
+    address: PULPA_TOKEN_CONTRACT_ADDRESS,
+    abi: optimismPulpaContract.abi,
+    functionName: "mint",
+    args: [form.recipientAddress, form.amount],
+  });
+
+  const { write: mint } = useContractWrite(config);
+
+  function mintPulpa() {
+    console.log(form);
+    if (!mint) {
+      console.error(prepareContractError);
+      return;
+    }
+    mint();
+  }
+
+  useEffect(() => {
+    if (prepareContractError) {
+      console.error(prepareContractError);
+    }
+  });
+
   return (
     <div>
       {/* Open the modal using document.getElementById('ID').showModal() method */}
@@ -31,6 +68,27 @@ function BaseModal() {
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
           </form>
           <h3 className="font-medium text-center text-2xl">Acuñar $PULPA</h3>
+          <div className="w-full flex flex-col items-center space-y-4 py-4">
+            <AddressInput
+              value={form.recipientAddress}
+              name="recipientAddress"
+              placeholder="Dirección o ENS"
+              onChange={(value: any) => {
+                setForm(form => ({ ...form, recipientAddress: value }));
+              }}
+            />
+            <EtherInput
+              value={form.amount}
+              name="amount"
+              placeholder="Cuánta pulpa quieres acuñar"
+              onChange={(value: any) => {
+                setForm(form => ({ ...form, amount: value }));
+              }}
+            />
+            <button className="btn" onClick={mintPulpa}>
+              Acuñar
+            </button>
+          </div>
           <p className="py-4">Press ESC key or click outside to close</p>
         </div>
         <form method="dialog" className="modal-backdrop">
@@ -41,4 +99,4 @@ function BaseModal() {
   );
 }
 
-export default BaseModal;
+export default MintPulpaModal;
