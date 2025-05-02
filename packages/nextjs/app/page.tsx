@@ -42,7 +42,10 @@ const Home: NextPage = () => {
       const { data } = await fetchLeaderboard();
       console.log(data?.pulpaAccounts.items);
       if (data?.pulpaAccounts.items) {
-        setPulpaLeaderboardData(data?.pulpaAccounts.items as PulpaAccount[]);
+        const filteredPulpaLeaderboardData = data?.pulpaAccounts.items.filter(
+          holder => Number(formatEther(BigInt(holder.balance))) >= 1,
+        );
+        setPulpaLeaderboardData(filteredPulpaLeaderboardData as PulpaAccount[]);
       }
     } catch (error) {
       console.error(error);
