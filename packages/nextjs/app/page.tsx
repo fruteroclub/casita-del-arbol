@@ -3,8 +3,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { Alchemy, Network } from "alchemy-sdk";
 import type { NextPage } from "next";
+import { formatEther } from "viem";
 import { useAccount } from "wagmi";
 import MintPulpaModal from "~~/components/modals/MintPulpaModal";
+import { Address } from "~~/components/scaffold-eth";
+import { fetchLeaderboard } from "~~/services/pulpa-indexer/graphql-client";
 import { truncateAddress } from "~~/utils/string";
 
 const config = {
@@ -12,25 +15,19 @@ const config = {
   network: Network.OPT_MAINNET,
 };
 
-const chainbaseApiKey = process.env.NEXT_PUBLIC_CHAINBASE_API_KEY as string;
-
 const PulpaTokenAddress = "0x029263aA1BE88127f1794780D9eEF453221C2f30";
 
-type PulpaBalanceElementType = {
-  amount: string;
-  original_amount: string;
-  usd_value: string;
-  wallet_address: string;
-};
+interface PulpaAccount {
+  address: string;
+  balance: string;
+}
 
 const Home: NextPage = () => {
   const alchemy = new Alchemy(config);
   const account = useAccount();
   const [isMounted, setIsMounted] = useState(false);
   const [pulpaBalance, setPulpaBalance] = useState<number>();
-  const [pulpaLeaderboardData, setPulpaLeaderboardData] = useState<PulpaBalanceElementType[]>([]);
-
-  const optimismNetworkId = "10"; // See https://docs.chainbase.com/reference/supported-chains to get the id of different chains.
+  const [pulpaLeaderboardData, setPulpaLeaderboardData] = useState<PulpaAccount[]>([]);
 
   const getUserPulpaBalance = useCallback(
     async (ownerAddr: string) => {
@@ -41,28 +38,25 @@ const Home: NextPage = () => {
     [alchemy.core],
   );
 
+  async function getPulpaLeaderboard() {
+    try {
+      const { data } = await fetchLeaderboard();
+      console.log(data?.pulpaAccounts.items);
+      if (data?.pulpaAccounts.items) {
+        setPulpaLeaderboardData(data?.pulpaAccounts.items as PulpaAccount[]);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
     if (!account || !account.address) return;
     getUserPulpaBalance(account.address);
 
     if (!isMounted) {
-      fetch(
-        `https://api.chainbase.online/v1/token/top-holders?chain_id=${optimismNetworkId}&contract_address=${PulpaTokenAddress}&page=1&limit=25`,
-        {
-          method: "GET",
-          headers: {
-            "x-api-key": chainbaseApiKey, // Replace the field with your API key.
-            accept: "application/json",
-          },
-        },
-      )
-        .then(response => response.json())
-        .then(data => {
-          console.log(data.data);
-          setPulpaLeaderboardData(data.data);
-        })
-        .catch(error => console.error(error))
-        .finally(() => setIsMounted(true));
+      getPulpaLeaderboard();
+      setIsMounted(true);
     }
   }, [account, getUserPulpaBalance, isMounted]);
 
@@ -112,10 +106,10 @@ const Home: NextPage = () => {
             </thead>
             <tbody>
               {pulpaLeaderboardData.map((pulpaHolder, index) => (
-                <tr key={pulpaHolder.wallet_address}>
+                <tr key={pulpaHolder.address}>
                   <th>{index + 1}</th>
-                  <td className="text-xl">{truncateAddress(pulpaHolder.wallet_address, 6, 6)}</td>
-                  <td className="text-xl">{parseInt(pulpaHolder.amount)}</td>
+                  <td className="text-xl">{<Address address={pulpaHolder.address} />}</td>
+                  <td className="text-xl">{Number(formatEther(BigInt(pulpaHolder.balance))).toFixed(0)}</td>
                 </tr>
               ))}
             </tbody>
