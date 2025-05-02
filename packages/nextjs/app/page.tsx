@@ -50,8 +50,9 @@ const Home: NextPage = () => {
   }
 
   useEffect(() => {
-    if (!account || !account.address) return;
-    getUserPulpaBalance(account.address);
+    if (account && account.address) {
+      getUserPulpaBalance(account.address);
+    }
 
     if (!isMounted) {
       getPulpaLeaderboard();
