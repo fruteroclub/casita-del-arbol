@@ -8,7 +8,6 @@ import { useAccount } from "wagmi";
 import MintPulpaModal from "~~/components/modals/MintPulpaModal";
 import { Address } from "~~/components/scaffold-eth";
 import { fetchLeaderboard } from "~~/services/pulpa-indexer/graphql-client";
-import { truncateAddress } from "~~/utils/string";
 
 const config = {
   apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
