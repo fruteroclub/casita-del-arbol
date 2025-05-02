@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AddressInput, EtherInput } from "../scaffold-eth";
-import { useContractWrite, usePrepareContractWrite } from "wagmi";
+import { parseEther } from "viem";
+import { useContractWrite } from "wagmi";
 import deployedContracts from "~~/contracts/deployedContracts";
 
-const PULPA_TOKEN_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_PULPA_TOKEN_OPTIMISM_ADDRESS;
+const PULPA_TOKEN_CONTRACT_ADDRESS =
+  process.env.NEXT_PUBLIC_PULPA_TOKEN_OPTIMISM_ADDRESS ?? "0x029263aA1BE88127f1794780D9eEF453221C2f30";
 
 function MintPulpaModal() {
   const [form, setForm] = useState<Record<string, any>>({
@@ -14,29 +16,23 @@ function MintPulpaModal() {
   });
   const optimismPulpaContract = deployedContracts[10].PulpaToken;
 
-  const { config, error: prepareContractError } = usePrepareContractWrite({
+  const { writeAsync: mint } = useContractWrite({
     address: PULPA_TOKEN_CONTRACT_ADDRESS,
     abi: optimismPulpaContract.abi,
     functionName: "mint",
     args: [form.recipientAddress, form.amount],
   });
 
-  const { write: mint } = useContractWrite(config);
-
   function mintPulpa() {
     console.log(form);
-    if (!mint) {
-      console.error(prepareContractError);
-      return;
+    try {
+      mint({
+        args: [form.recipientAddress, parseEther(form.amount)],
+      });
+    } catch (error) {
+      console.error(error);
     }
-    mint();
   }
-
-  useEffect(() => {
-    if (prepareContractError) {
-      console.error(prepareContractError);
-    }
-  });
 
   return (
     <div>
@@ -75,6 +71,7 @@ function MintPulpaModal() {
               placeholder="Dirección o ENS"
               onChange={(value: any) => {
                 setForm(form => ({ ...form, recipientAddress: value }));
+                console.log(form);
               }}
             />
             <EtherInput
