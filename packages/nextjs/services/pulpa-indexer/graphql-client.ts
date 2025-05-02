@@ -44,12 +44,13 @@ export async function fetchLeaderboard(): Promise<
   FetchGraphQLResult<{ pulpaAccounts: { items: { address: string; balance: string }[] } }>
 > {
   const query = `
-    query PulpaLeaderboard {
-      pulpaAccounts(orderDirection: "desc", orderBy: "balance") {
+    query PulpaLeaderboar {
+      pulpaAccounts(orderDirection: "desc", orderBy: "balance", limit: 1000) {
         items {
           address
           balance
         }
+        totalCount
       }
     }
   `;
